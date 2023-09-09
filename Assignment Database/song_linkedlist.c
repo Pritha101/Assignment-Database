@@ -1,67 +1,64 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "common.h"  // include the header file for common structures and function prototypes
-
-
+#include "song_linkedlist.h"
 
 // Function to create a new song node
-SongNode* newSongNode(char* song_name) {
-    SongNode* new_node = (SongNode*)malloc(sizeof(SongNode));
-    strcpy_s (new_node->song, song_name);
-    new_node->next = NULL;
-    return new_node;
+SongNode* createSongNode(char* song_name) {
+    SongNode* newNode = (SongNode*)malloc(sizeof(SongNode));
+    newNode->song_name = _strdup(song_name);
+    newNode->next = NULL;
+    return newNode;
 }
 
-// Function to add a song to a playlist (assumes playlist is not NULL)
-void addSongToPlaylist(SongNode** song_list, char* song_name) {
-    SongNode* new_node = newSongNode(song_name);
-    SongNode* current = *song_list;
-    SongNode* previous = NULL;
+// Function to add a song to the linked list
+SongNode* addSong(SongNode* head, char* song_name) {
+    SongNode* newNode = createSongNode(song_name);
 
-    // Insert in sorted order
-    while (current != NULL && strcmp(current->song, song_name) < 0) {
-        previous = current;
-        current = current->next;
+    if (head == NULL) {
+        return newNode;
     }
 
-    if (previous == NULL) { // Insert at beginning
-        new_node->next = *song_list;
-        *song_list = new_node;
+    SongNode* temp = head;
+    while (temp->next != NULL) {
+        temp = temp->next;
     }
-    else { // Insert at appropriate position
-        new_node->next = current;
-        previous->next = new_node;
-    }
+    temp->next = newNode;
+
+    return head;
 }
 
-// Function to remove a song from a playlist (assumes playlist is not NULL and song exists)
-void removeSongFromPlaylist(SongNode** song_list, char* song_name) {
-    SongNode* current = *song_list;
-    SongNode* previous = NULL;
+// Function to remove a song from the linked list
+SongNode* removeSong(SongNode* head, char* song_name) {
+    SongNode* temp = head, * prev;
 
-    // Search for the song
-    while (current != NULL && strcmp(current->song, song_name) != 0) {
-        previous = current;
-        current = current->next;
+    if (temp != NULL && strcmp(temp->song_name, song_name) == 0) {
+        head = temp->next;
+        free(temp->song_name);
+        free(temp);
+        return head;
     }
 
-    // Remove the song
-    if (previous == NULL) { // Remove from the beginning
-        *song_list = current->next;
+    while (temp != NULL && strcmp(temp->song_name, song_name) != 0) {
+        prev = temp;
+        temp = temp->next;
     }
-    else { // Remove from somewhere else
-        previous->next = current->next;
-    }
-    free(current);
+
+    if (temp == NULL) return head;
+
+    prev->next = temp->next;
+    free(temp->song_name);
+    free(temp);
+
+    return head;
 }
 
-// Function to print songs in a playlist in alphabetical order
-void printSongsInPlaylist(SongNode* song_list) {
-    SongNode* current = song_list;
-    while (current != NULL) {
-        printf_s("%s\n", current->song);
-        current = current->next;
+// Function to print all songs in the linked list
+void printSongs(SongNode* head) {
+    SongNode* temp = head;
+    while (temp != NULL) {
+        printf_s("    Song: %s\n", temp->song_name);
+        temp = temp->next;
     }
 }
 

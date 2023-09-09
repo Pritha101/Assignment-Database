@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef PLAYLIST_BST_H
 #define PLAYLIST_BST_H
 
@@ -39,4 +41,3 @@ void printSongsInPlaylist(PlaylistNode* playlist);
 char* findMostSimilarPlaylist(PlaylistNode* root, char* playlist_name);
 
 #endif // PLAYLIST_BST_H
-
